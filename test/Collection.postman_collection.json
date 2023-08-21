@@ -1,0 +1,800 @@
+{
+	"info": {
+		"_postman_id": "3900ec6b-8ea5-466f-99ef-2160dc2dea6a",
+		"name": "Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "26066152",
+		"_collection_link": "https://dark-water-307665.postman.co/workspace/Svadhan~a43d5470-f8a9-47f0-8925-21096fd9ad95/collection/26066152-3900ec6b-8ea5-466f-99ef-2160dc2dea6a?action=share&creator=26066152&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Pending Collections",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"agentId\": 1,\r\n    \"sortOrder\": \"DPD_LOWEST_TO_HIGHEST\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{collectionURL}}/pendingCollections"
+			},
+			"response": [
+				{
+					"name": "Pending Collections",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agentId\": 1,\r\n    \"sortOrder\": \"DPD_LOWEST_TO_HIGHEST\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{collectionURL}}/pendingCollections"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.31.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "443a78ae-76e9-4ecd-b5ea-e7c8edfa5034"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/pendingCollections"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 27 Apr 2023 05:59:38 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": {\n        \"customersDue\": 8,\n        \"loansDue\": 8,\n        \"amountsDue\": 0,\n        \"pendingCustomerCollectionResponses\": [\n            {\n                \"name\": \"Sismi Joseph\",\n                \"village\": \"\",\n                \"mobileNumber\": \"+919562547203\",\n                \"dueAmount\": 0,\n                \"postOffice\": null,\n                \"dpd\": null\n            }\n        ]\n    },\n    \"statusCode\": \"OK\",\n    \"statusCodeValue\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Active loans",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{collectionURL}}/activeLoans/:customerId",
+					"host": [
+						"{{collectionURL}}"
+					],
+					"path": [
+						"activeLoans",
+						":customerId"
+					],
+					"variable": [
+						{
+							"key": "customerId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Active loans",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{collectionURL}}/activeLoans/:customerId",
+							"host": [
+								"{{collectionURL}}"
+							],
+							"path": [
+								"activeLoans",
+								":customerId"
+							],
+							"variable": [
+								{
+									"key": "customerId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.31.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "ffa5219c-8a31-494f-9f61-beb193ceebd2"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/activeLoans/1"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 27 Apr 2023 11:12:20 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": {\n        \"loansDue\": 0,\n        \"amountDue\": 0,\n        \"collectedLoans\": null,\n        \"collectedAmounts\": null,\n        \"loanDetailsDTOS\": [\n            {\n                \"loanId\": null,\n                \"emiDueDate\": null,\n                \"loanAmount\": null,\n                \"emi\": null,\n                \"lenderName\": \"Indian Overseas Bank\",\n                \"lenderLogo\": \"https://dhanstorage.s3.ap-south-1.amazonaws.com/logos/1.png\",\n                \"paymentDue\": 0,\n                \"loanOutstanding\": 150000,\n                \"loanPaymentHistoryDetailsDTOS\": null,\n                \"loanTrendDetailsDTO\": null,\n                \"dueDatePassed\": false\n            }\n        ],\n        \"tcDetailsDTOS\": []\n    },\n    \"statusCode\": \"OK\",\n    \"statusCodeValue\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Loan Payment History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{collectionURL}}/loanPaymentHistory/:loanId",
+					"host": [
+						"{{collectionURL}}"
+					],
+					"path": [
+						"loanPaymentHistory",
+						":loanId"
+					],
+					"variable": [
+						{
+							"key": "loanId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Loan Payment History",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{collectionURL}}/loanPaymentHistory/:loanId",
+							"host": [
+								"{{collectionURL}}"
+							],
+							"path": [
+								"loanPaymentHistory",
+								":loanId"
+							],
+							"variable": [
+								{
+									"key": "loanId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.31.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "97b3aa17-b972-40de-8d2b-519cf6b1a184"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/loanPaymentHistory/2"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 27 Apr 2023 11:45:32 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": {\n        \"loanId\": 2,\n        \"emiDueDate\": \"2023-04-06T15:29:00\",\n        \"loanAmount\": 170000,\n        \"emi\": 4500,\n        \"lenderName\": null,\n        \"lenderLogo\": null,\n        \"paymentDue\": 4277,\n        \"loanOutstanding\": 170000,\n        \"loanPaymentHistoryDetailsDTOS\": [],\n        \"loanTrendDetailsDTO\": null,\n        \"dueDatePassed\": true\n    },\n    \"statusCode\": \"OK\",\n    \"statusCodeValue\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Loan Trend",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"loanId\": 2,\r\n    \"rangeType\": \"MONTH\",\r\n    \"range\": \"3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{collectionURL}}/loanTrend"
+			},
+			"response": [
+				{
+					"name": "Loan Trend",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"loanId\": 2,\r\n    \"rangeType\": \"MONTH\",\r\n    \"range\": \"3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{collectionURL}}/loanTrend"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.31.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "2443f394-6a47-48ca-96d1-801abd5ae113"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/loanTrend"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Apr 2023 06:06:54 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": {\n        \"calls\": null,\n        \"visits\": null,\n        \"dpd\": null,\n        \"loanMonthlyTrendDetailsDTOList\": [\n            {\n                \"month\": \"APRIL\",\n                \"dueDate\": \"2023-04-06T15:29:00\",\n                \"paymentDate\": null\n            }\n        ]\n    },\n    \"statusCodeValue\": 200,\n    \"statusCode\": \"OK\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Customer Profile",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{collectionURL}}/customerProfile/:customerId",
+					"host": [
+						"{{collectionURL}}"
+					],
+					"path": [
+						"customerProfile",
+						":customerId"
+					],
+					"variable": [
+						{
+							"key": "customerId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Customer Profile",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{collectionURL}}/customerProfile/:customerId",
+							"host": [
+								"{{collectionURL}}"
+							],
+							"path": [
+								"customerProfile",
+								":customerId"
+							],
+							"variable": [
+								{
+									"key": "customerId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.31.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "93fedabf-b456-4118-b755-a9fbcefd5428"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/customerProfile/1"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Apr 2023 06:30:25 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": {\n        \"id\": 1,\n        \"fullName\": \"Jayaparvathy\",\n        \"photo\": null,\n        \"housePhoto\": null,\n        \"houseLocation\": {\n            \"latitude\": null,\n            \"longitude\": null\n        },\n        \"mobile\": \"+919847621671\",\n        \"address\": \"Sreeparvathy, Machamthuruth, Vadakkekara (part), Ernakulam, Vadakkekara, Kerala, 683522\",\n        \"voterIdNumber\": \"RXD0484543\",\n        \"aadharNumber\": \"964584506404\",\n        \"continuingGuarantorDTO\": {\n            \"name\": \"Akhil Krishnan\",\n            \"phoneNumber\": \"+918896956595\",\n            \"voterId\": null,\n            \"relation\": \"SPOUSE\"\n        }\n    },\n    \"statusCode\": \"OK\",\n    \"statusCodeValue\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Trust Circle Details of a Customer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{collectionURL}}/trustCircleDetails/:customerId",
+					"host": [
+						"{{collectionURL}}"
+					],
+					"path": [
+						"trustCircleDetails",
+						":customerId"
+					],
+					"variable": [
+						{
+							"key": "customerId",
+							"value": "10223018"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Customer Profile",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{collectionURL}}/customerProfile/:customerId",
+							"host": [
+								"{{collectionURL}}"
+							],
+							"path": [
+								"customerProfile",
+								":customerId"
+							],
+							"variable": [
+								{
+									"key": "customerId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.31.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "93fedabf-b456-4118-b755-a9fbcefd5428"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/customerProfile/1"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Apr 2023 06:30:25 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": {\n        \"id\": 1,\n        \"fullName\": \"Jayaparvathy\",\n        \"photo\": null,\n        \"housePhoto\": null,\n        \"houseLocation\": {\n            \"latitude\": null,\n            \"longitude\": null\n        },\n        \"mobile\": \"+919847621671\",\n        \"address\": \"Sreeparvathy, Machamthuruth, Vadakkekara (part), Ernakulam, Vadakkekara, Kerala, 683522\",\n        \"voterIdNumber\": \"RXD0484543\",\n        \"aadharNumber\": \"964584506404\",\n        \"continuingGuarantorDTO\": {\n            \"name\": \"Akhil Krishnan\",\n            \"phoneNumber\": \"+918896956595\",\n            \"voterId\": null,\n            \"relation\": \"SPOUSE\"\n        }\n    },\n    \"statusCode\": \"OK\",\n    \"statusCodeValue\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Completed Collections",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{collectionURL}}/completedCollections/:agentId",
+					"host": [
+						"{{collectionURL}}"
+					],
+					"path": [
+						"completedCollections",
+						":agentId"
+					],
+					"variable": [
+						{
+							"key": "agentId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Completed Collections",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{collectionURL}}/completedCollections/:agentId",
+							"host": [
+								"{{collectionURL}}"
+							],
+							"path": [
+								"completedCollections",
+								":agentId"
+							],
+							"variable": [
+								{
+									"key": "agentId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.31.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "d5ad7d13-14be-4323-bf49-64879285961b"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/completedCollections/1"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 02 May 2023 05:50:10 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": {\n        \"totalAmountCollected\": 0,\n        \"timeLeftToDeposit\": null,\n        \"depositDetailsDTOS\": [\n            {\n                \"customerName\": \"SONA T S\",\n                \"village\": \"\",\n                \"mobileNumber\": \"+919562859413\",\n                \"amount\": null,\n                \"dueDatePassed\": false,\n                \"duePending\": false\n            },\n            {\n                \"customerName\": \"Sismi Joseph\",\n                \"village\": \"\",\n                \"mobileNumber\": \"+919400139599\",\n                \"amount\": null,\n                \"dueDatePassed\": false,\n                \"duePending\": false\n            },\n            {\n                \"customerName\": \"Jayaparvathy\",\n                \"village\": \"\",\n                \"mobileNumber\": \"+919847621671\",\n                \"amount\": 0,\n                \"dueDatePassed\": true,\n                \"duePending\": true\n            },\n            {\n                \"customerName\": \"Reshma K R\",\n                \"village\": \"\",\n                \"mobileNumber\": \"+919562547203\",\n                \"amount\": null,\n                \"dueDatePassed\": false,\n                \"duePending\": false\n            },\n            {\n                \"customerName\": \"Anees Ahmad\",\n                \"village\": \"\",\n                \"mobileNumber\": \"+918943279236\",\n                \"amount\": null,\n                \"dueDatePassed\": false,\n                \"duePending\": false\n            },\n            {\n                \"customerName\": \"Jayaparvathy\",\n                \"village\": \"\",\n                \"mobileNumber\": \"+919995857278\",\n                \"amount\": null,\n                \"dueDatePassed\": false,\n                \"duePending\": false\n            }\n        ]\n    },\n    \"statusCode\": \"OK\",\n    \"statusCodeValue\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "Lender API7 Scheduler",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{collectionURL}}/lenderAPI7Scheduler"
+			},
+			"response": [
+				{
+					"name": "Lender API7 Scheduler",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": "{{collectionURL}}/lenderAPI7Scheduler"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.32.2"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "49f0949d-e8f8-4660-b38e-185d7f4bca9a"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/lenderAPI7Scheduler"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 12 Jun 2023 09:45:40 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": \"Success\",\n    \"statusCode\": \"OK\",\n    \"statusCodeValue\": 200\n}"
+				}
+			]
+		},
+		{
+			"name": "CollectionConfirmation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customerId\":10500519,\r\n    \"paidAmount\":2369.0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{collectionURL}}/collectionConfirmation"
+			},
+			"response": [
+				{
+					"name": "CollectionConfirmation",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerId\":10500519,\r\n    \"paidAmount\":2369.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{collectionURL}}/collectionConfirmation"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "user-agent",
+							"value": "PostmanRuntime/7.32.3"
+						},
+						{
+							"key": "cache-control",
+							"value": "no-cache"
+						},
+						{
+							"key": "postman-token",
+							"value": "17cdcda5-1a37-429a-853a-69bd89ad8e52"
+						},
+						{
+							"key": "accept-encoding",
+							"value": "gzip, deflate, br"
+						},
+						{
+							"key": "connection",
+							"value": "keep-alive, keep-alive"
+						},
+						{
+							"key": "uri",
+							"value": "/collectionConfirmation"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 22 Jun 2023 09:21:32 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"headers\": {},\n    \"body\": \"Success\",\n    \"statusCodeValue\": 200,\n    \"statusCode\": \"OK\"\n}"
+				}
+			]
+		}
+	]
+}
