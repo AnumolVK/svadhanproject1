@@ -153,9 +153,14 @@ jobs:
           aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type AWS --integration-http-method ${method[$index]} --uri arn:aws:apigateway:$AWS_REGION:lambda:path/2015-03-31/functions/$LAMBDA_ARN/invocations
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "" 
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "" 
-          aws apigateway delete-stage --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
-          aws apigateway create-deployment --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
+         
         done
+
+    - name: AWS ApiGateway Deployment
+             
+      run: |
+         aws apigateway delete-stage --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
+          aws apigateway create-deployment --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
     - name: Install Node
       uses: actions/setup-node@v1
       with:
