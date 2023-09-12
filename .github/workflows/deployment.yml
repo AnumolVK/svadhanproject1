@@ -96,6 +96,7 @@ jobs:
                   --role ${{secrets.LAMBDA_ARN }} \
                   --runtime 'java17' \
                   --handler ${handler[$index]} \
+                  --environment "Variables={SPRING_ACTIVE_PROFILES=${{vars.Deployment_Stage}}}" \
                   --code "S3Bucket=${{ vars.S3_BUCKET }},\
                          S3Key='${{ vars.APP_NAME}}-1.0.0-SNAPSHOT-lambda-package.zip',\
                          ImageUri='https://${{ vars.S3_BUCKET }}.s3.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.APP_NAME}}-1.0.0-SNAPSHOT-lambda-package.zip'"
