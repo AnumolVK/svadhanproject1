@@ -94,7 +94,7 @@ jobs:
                   --function-name ${funName[$index]} \
                   --memory-size '512'\
                   --role ${{secrets.LAMBDA_ARN }} \
-                  --timeout 60
+                  --timeout 60 \
                   --runtime 'java17' \
                   --handler ${handler[$index]} \
                   --environment "Variables={SPRING_ACTIVE_PROFILES=${{vars.Deployment_Stage}}}" \
