@@ -161,7 +161,10 @@ jobs:
           echo "RESOURCE not EXISTgggg$RESOURCE_EXIST"
           RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $GW_RESOURCE_ID  --path-part ${funName[$index]} --query id --output text)
           echo "RESOURE_ID=$RESOURE_ID" >> $GITHUB_ENV
-          if 
+          if (${method[$index]}== "GET" && ${pathVar[$index]} != ""); then
+            RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $RESOURE_ID --path-part ${pathVar[$index]} --query id --output text)
+
+          fi
           aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --authorization-type None
           aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --response-models 'application/json'='Empty' 
           # aws lambda remove-permission --function-name ${funName[$index]} --statement-id ${funName[$index]}
