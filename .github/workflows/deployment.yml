@@ -150,7 +150,7 @@ jobs:
           echo "LAMBDA_ARN=$LAMBDA_ARN" >> $GITHUB_ENV
           RESOURCE_NAME=${funName[$index]}
           echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
-          aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json
+          # aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json
           RESOURCE_EXIST=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/$RESOURCE_NAME" -r '.items[] |select(.path==$v) |.id')
           echo "RESOURCE_EXIST$RESOURCE_EXIST" >> $GITHUB_ENV
           if [[ $RESOURCE_EXIST != "" ]]; then
@@ -160,6 +160,7 @@ jobs:
           echo "RESOURCE not EXISTgggg$RESOURCE_EXIST"
           RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $GW_RESOURCE_ID  --path-part ${funName[$index]} --query id --output text)
           echo "RESOURE_ID=$RESOURE_ID" >> $GITHUB_ENV
+          echo "PARHVAR${pathVar[$index]}"
           if (${pathVar[$index]} != ""); then
             echo "INSIDE PATH VAR"
 
