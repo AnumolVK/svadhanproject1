@@ -152,7 +152,6 @@ jobs:
           echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
           aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json
           RESOURCE_EXIST=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/$RESOURCE_NAME" -r '.items[] |select(.path==$v) |.id')
-          echo "RESOURCE_EXIST$RESOURCE_EXIST"
           echo "RESOURCE_EXIST$RESOURCE_EXIST" >> $GITHUB_ENV
           if [[ $RESOURCE_EXIST != "" ]]; then
             echo "RESOURCE_EXIST$RESOURCE_EXIST"
@@ -161,7 +160,9 @@ jobs:
           echo "RESOURCE not EXISTgggg$RESOURCE_EXIST"
           RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $GW_RESOURCE_ID  --path-part ${funName[$index]} --query id --output text)
           echo "RESOURE_ID=$RESOURE_ID" >> $GITHUB_ENV
-          if (${method[$index]}== "GET" && ${pathVar[$index]} != ""); then
+          if (${pathVar[$index]} != ""); then
+            echo "INSIDE PATH VAR"
+
             RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $RESOURE_ID --path-part ${pathVar[$index]} --query id --output text)
 
           fi
