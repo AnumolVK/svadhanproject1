@@ -161,7 +161,7 @@ jobs:
           RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $GW_RESOURCE_ID  --path-part ${funName[$index]} --query id --output text)
           echo "RESOURE_ID=$RESOURE_ID" >> $GITHUB_ENV
           echo "PARHVAR${pathVar[$index]}"
-          if (${pathVar[$index]} != ""); then
+          if (${pathVar[$index]} != "Test"); then
             echo "INSIDE PATH VAR"
 
             RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $RESOURE_ID --path-part ${pathVar[$index]} --query id --output text)
