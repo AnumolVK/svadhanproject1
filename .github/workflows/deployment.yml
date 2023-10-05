@@ -101,7 +101,7 @@ jobs:
             for index in ${!handler[@]}
             do
               echo 'INDEC$index'
-               aws lambda delete-function --function-name ${funName[$index]} --output json
+              #  aws lambda delete-function --function-name ${funName[$index]} --output json
                aws lambda create-function \
                   --function-name ${funName[$index]} \
                   --memory-size '512'\
