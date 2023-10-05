@@ -23,4 +23,18 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     List<Customer> findTop10ByIdInAndNumberLikeOrderByCreateDateTimeDesc(@Param("ids") List<Long> ids, @Param("mobile") String mobile);
 
     List<Customer> findAllByAssociatedAgentIdAndHasRegisterProcessCompleted(Long associatedAgentId, Boolean hasRegisterProcessCompleted);
+
+    @Query(nativeQuery = true, value = "SELECT VILLAGE_NAME FROM VILLAGE_PIN_CODE_LIST vpcl WHERE PIN_CODE IN (SELECT COD.PIN_CODE FROM CUSTOMER_OCR_DATA cod WHERE CUSTOMER_ID = :ids) AND ROWNUM<=1")
+    String findVillageNameByCustomerID(@Param("ids") Long ids);
+
+//    @Query(nativeQuery = true, value = "SELECT SUM(t.AMOUNT)  FROM TRANSACTION t JOIN LOAN l ON l.ID = t.LOAN_ID WHERE l.CUSTOMER_ID = :ids AND TRANSACTION_STATUS_ID = 3 ")
+//    Double findAmountByCustomerID(@Param("ids") Long ids);
+    @Query(nativeQuery = true, value = "SELECT SUM(t.AMOUNT)  FROM TRANSACTION t JOIN LOAN l ON l.ID = t.LOAN_ID WHERE l.CUSTOMER_ID = :ids AND TRANSACTION_STATUS_ID = 3 AND t.PGW_ID IS NULL")
+    Double findAmountByCustomerID(@Param("ids") Long ids);
+
+    @Query(nativeQuery = true, value = "SELECT SUM(t.AMOUNT)  FROM TRANSACTION t JOIN LOAN l ON l.ID = t.LOAN_ID JOIN AGENT_TRANSACTION at2 ON AT2.TRANSACTION_ID = t.ID WHERE l.CUSTOMER_ID = :ids AND TRANSACTION_STATUS_ID = 3 AND AT2.STATUS = 'PROCESSED' ")
+    Double findProcessedAmountByCustomerID(@Param("ids") Long ids);
+
+    @Query(nativeQuery = true, value = "SELECT SUM(t.AMOUNT) FROM TRANSACTION t JOIN LOAN l ON l.ID = t.LOAN_ID JOIN AGENT_TRANSACTION at2 ON AT2.TRANSACTION_ID = t.ID WHERE TRANSACTION_STATUS_ID = 3 AND AT2.STATUS = 'PROCESSED' ")
+    Double findTotalProcessedAmountByCustomerID();
 }

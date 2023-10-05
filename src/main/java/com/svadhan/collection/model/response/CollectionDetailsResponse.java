@@ -14,6 +14,7 @@ import java.util.List;
 public class CollectionDetailsResponse {
     private Double totalAmountCollected;
     private Long timeLeftToDeposit;
+    private String firstCollectionTime;
     private double depositedSum;
     private double depositPendingSum;
     private List<DepositDetailsDTO> depositedDetailsDTOS;

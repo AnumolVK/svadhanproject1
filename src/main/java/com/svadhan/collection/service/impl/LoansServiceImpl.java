@@ -112,6 +112,7 @@ public class LoansServiceImpl implements LoansService {
         if (emis.isEmpty()) {
             throw new RequiredEntityNotFoundException(String.format("No EMIs found with given loan id '%d'", loanId));
         }
+        String loanLenderId = StringUtils.overlay(loan.getLenderLoanId(), StringUtils.repeat("X", loan.getLenderLoanId().length() - 6), 2, loan.getLenderLoanId().length() - 4);
         loanDetailsDTO.setLoanId(loan.getId());
         loanDetailsDTO.setLoanAmount(loan.getLoanAmount());
         loanDetailsDTO.setEmi(loan.getEmi());
@@ -132,6 +133,7 @@ public class LoansServiceImpl implements LoansService {
             return loanPaymentHistoryDetailsDTO;
         }).toList();
         loanDetailsDTO.setLoanPaymentHistoryDetailsDTOS(loanPaymentHistoryDetailsDTOS);
+        loanDetailsDTO.setMaskedLenderLoanId(loanLenderId);
         return loanDetailsDTO;
     }
 
@@ -278,7 +280,10 @@ public class LoansServiceImpl implements LoansService {
                 log.info("There are no transactions found for the loan: " + loan.getId());
                 return null;
             }
-            return transactions.stream().map(Transaction::getAmount).reduce(0.0, Double::sum);
+            return transactions.stream().filter(transaction -> {
+                Optional<Transaction> transactionOptional = transactionRepository.findTransactionById(transaction.getId());
+                return transactionOptional.isPresent();
+            }).map(Transaction::getAmount).reduce(0.0, Double::sum);
         }).filter(Objects::nonNull).reduce(0.0, Double::sum);
     }
     public Integer getTotalCollectedLoan(Customer customer){

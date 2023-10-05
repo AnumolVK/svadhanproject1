@@ -19,4 +19,5 @@ public class LoanDetailsDTO {
     private Double loanOutstanding;
     private List<LoanPaymentHistoryDetailsDTO> loanPaymentHistoryDetailsDTOS;
     private LoanTrendDetailsDTO loanTrendDetailsDTO;
+    private String maskedLenderLoanId;
 }

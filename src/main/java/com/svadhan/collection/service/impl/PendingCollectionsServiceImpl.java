@@ -155,7 +155,12 @@ public class PendingCollectionsServiceImpl implements PendingCollectionsService 
             sortedPendingCollections = pendingCustomerCollectionResponses.stream().sorted(byAmountAce).toList();
         }
 
-        Map<String, List<PendingCustomerCollectionResponse>> pendingCollectionCustomerResponse = sortedPendingCollections.stream()
+        //Note : Removing the pending collection while we are getting due amount value is zero [As per the requirement]
+        List<PendingCustomerCollectionResponse> sortedPendingCollectionsModified = new ArrayList<>(sortedPendingCollections);
+        sortedPendingCollectionsModified.removeIf(response -> response.getDueAmount() == 0);
+
+
+        Map<String, List<PendingCustomerCollectionResponse>> pendingCollectionCustomerResponse = sortedPendingCollectionsModified.stream()
                 .collect(Collectors.groupingBy(PendingCustomerCollectionResponse::getVillage));
         List<Map<String, Object>> pendingCollections = new ArrayList<>();
         for (Map.Entry<String, List<PendingCustomerCollectionResponse>> entry : pendingCollectionCustomerResponse.entrySet()) {

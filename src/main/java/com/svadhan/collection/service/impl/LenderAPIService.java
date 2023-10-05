@@ -9,6 +9,7 @@ import com.svadhan.collection.model.api8.UpdateRepaymentResponse;
 import com.svadhan.collection.model.lender.Api6Response;
 import com.svadhan.collection.model.lender.Api6Root;
 import com.svadhan.collection.model.response.LoanEmiDues;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class LenderAPIService {
 
     @Value("${svadhan.lender-api.base.url}")
@@ -31,7 +33,10 @@ public class LenderAPIService {
         List<LoanEmiDues> loanEmiDues = new ArrayList<>();
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> requestBody = new HashMap<>();
-        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate currentDate = LocalDate.now();
+        LocalDate futureDate = currentDate.plusMonths(2);
+        String date = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        log.info("Future Date : "+date);
         requestBody.put("transactionDate", date);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
