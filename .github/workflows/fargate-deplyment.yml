@@ -198,14 +198,26 @@ jobs:
             echo "INSIDE PATH VAR"
             RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $RESOURE_ID --path-part "{${pathVar[$index]}}" --query id --output text)
           fi
-          aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
-              --authorization-type None --request-parameters "{\"method.request.path.${pathVar[$index]}\": true}"
+          if [[ ${pathVar[$index]} != "" ]]; then
+            aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
+                --authorization-type None --request-parameters "{\"method.request.path.${pathVar[$index]}\": true}"
+          else
+             aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
+              --authorization-type None 
+          fi    
+
+          
           aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --response-models 'application/json'='Empty' 
           # aws lambda remove-permission --function-name ${funName[$index]} --statement-id ${funName[$index]}
           # aws lambda add-permission --function-name ${funName[$index]} --source-arn "arn:aws:execute-api:${{ vars.AWS_REGION }}:263711368213:$GATEWAY_ID/*/${method[$index]}/${funName[$index]}" --principal apigateway.amazonaws.com --statement-id ${funName[$index]} --action lambda:InvokeFunction
+         if [[ ${pathVar[$index]} != "" ]]; then
           aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
               --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]}/${pathVar[$index]} \
               --region ${{env.AWS_REGION}} --request-parameters "{\"integration.request.path.${pathVar[$index]}\": \"method.request.path.${pathVar[$index]}\"}"
+          else
+            aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
+                --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]} \
+                --region ${{env.AWS_REGION}} 
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "" 
           # aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "" 
          done
