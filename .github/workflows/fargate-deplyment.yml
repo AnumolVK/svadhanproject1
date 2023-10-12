@@ -212,7 +212,7 @@ jobs:
           # aws lambda add-permission --function-name ${funName[$index]} --source-arn "arn:aws:execute-api:${{ vars.AWS_REGION }}:263711368213:$GATEWAY_ID/*/${method[$index]}/${funName[$index]}" --principal apigateway.amazonaws.com --statement-id ${funName[$index]} --action lambda:InvokeFunction
           if [[ ${pathVar[$index]} != "" ]]; then
             aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
-                --integration-http-method ${method[$index]} --uri --uri ${{env.ALB_URL}}/${funName[$index]}/"{"${pathVar[$index]}"}" \
+                --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]}/"{"${pathVar[$index]}"}" \
                 --region ${{env.AWS_REGION}} --request-parameters "{\"integration.request.path.${pathVar[$index]}\": \"method.request.path.${pathVar[$index]}\"}"
           else
               aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
