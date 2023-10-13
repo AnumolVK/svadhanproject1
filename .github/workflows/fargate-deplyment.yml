@@ -137,9 +137,10 @@ jobs:
                 }
             }]" 
             
+    
     - name: Update ECS Service
       run: |
-           aws ecs update-service --cluster ${{env.ECS_CLUSTER}} --service ${{env.ECS_SERVICE}} --task-definition ${{env.APP_NAME}}         ﻿﻿
+            aws ecs update-service --cluster ${{env.ECS_CLUSTER}} --service ${{env.ECS_SERVICE}} --task-definition ${{env.APP_NAME}}         ﻿﻿
     # - name:  GET AWS Gateway Root Resource 
     #   continue-on-error: true
      
