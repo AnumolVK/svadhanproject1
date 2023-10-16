@@ -11,4 +11,6 @@ public class CustomerTrustCircleResponse {
     private Double paymentDue;
     private boolean isDueDatePassed;
     private String pinCode;
+
+    private Long customerId;
 }

@@ -72,7 +72,7 @@ public class CustomerDetailsServiceImpl implements CustomerDetailsService {
             continuingGuarantorDTO.setName(continuingGuarantor.get().getName());
             continuingGuarantorDTO.setRelation(continuingGuarantor.get().getRelationShip());
             continuingGuarantorDTO.setPhoneNumber(continuingGuarantor.get().getMobileNumber());
-            //continuingGuarantorDTO.setVoterId();
+            continuingGuarantorDTO.setVoterId(continuingGuarantor.get().getVoterId());
         }
         customerProfileResponse.setContinuingGuarantorDTO(continuingGuarantorDTO);
         customerProfileResponse.setHousePhoto(this.getCustomerDocUrl(customer, DocType.HOUSE_PHOTO));

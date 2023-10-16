@@ -29,6 +29,8 @@ public class ContinuingGuarantor implements Serializable {
 
     @Column(name = "mobile_number")
     private String mobileNumber;
+    @Column(name = "voter_id")
+    private String voterId;
 
     @Column(name = "status")
     private Integer status;

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -56,6 +57,7 @@ public class TrustCircleServiceImpl implements TrustCircleService {
                     }
                     customerTrustCircleResponse.setName(customers.get().getName());
                     customerTrustCircleResponse.setPhoneNumber(customers.get().getMobile());
+                    customerTrustCircleResponse.setCustomerId(customer.getId());
                     Optional<CustomerOcrData> customerOcrData = customerOcrDataRepository.findByCustomerId(customerId);
                     String customerPinCode = customerOcrData.isPresent() ? customerOcrData.get().getPinCode() : "";
 //                    List<VillagePinCodeList> villagePinCodeList = villagePinCodeRepository.findByPinCode(customerPinCode);
@@ -79,6 +81,9 @@ public class TrustCircleServiceImpl implements TrustCircleService {
                 return customerTrustCircleResponse;
             }).toList();
         }
+
+        /*Removing current customerId from customerTrustCircleResponses list.*/
+        customerTrustCircleResponses=customerTrustCircleResponses.stream().filter(e -> !e.getCustomerId().equals(customerId)).collect(Collectors.toList());
         return customerTrustCircleResponses;
     }
 }

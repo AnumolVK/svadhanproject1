@@ -127,6 +127,11 @@ jobs:
               \"protocol\": \"tcp\"         
             }
             ],
+            \"environment\": [ \
+               {
+                \"name\": \"spring.profiles.active\",
+                \"value\": \"${{vars.Deployment_Stage}}\"
+              }],
              \"logConfiguration\": {\"logDriver\": \"awslogs\",\"options\": { \
                     \"awslogs-group\": \"${{env.APP_NAME}}\",
                     \"awslogs-region\": \"ap-south-2\",

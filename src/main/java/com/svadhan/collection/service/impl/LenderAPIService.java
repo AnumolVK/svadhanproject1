@@ -41,7 +41,9 @@ public class LenderAPIService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
+        log.info("Collection : calling Api7 REQUEST : "+request);
         ResponseEntity<String> response = restTemplate.exchange(lenderApiBaseUrl + "Api7", HttpMethod.POST, request, String.class);
+        log.info("Collection :  Api7 RESPONSE : "+response);
         if (response.getStatusCode().value() == 200 || response.getStatusCode().value() == 201) {
             ObjectMapper mapper = new ObjectMapper();
             try {
@@ -63,7 +65,9 @@ public class LenderAPIService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
         try {
+            log.info("Collection : calling Api8 REQUEST : "+request);
             ResponseEntity<String> response = restTemplate.exchange(lenderApiBaseUrl + "Api8", HttpMethod.POST, request, String.class);
+            log.info("Collection :  Api8 RESPONSE : "+response);
             if (response.getStatusCode().value() == 200 || response.getStatusCode().value() == 201) {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
