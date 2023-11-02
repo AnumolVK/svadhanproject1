@@ -7,6 +7,8 @@ import com.svadhan.collection.model.response.CustomerTrustCircleResponse;
 import com.svadhan.collection.repository.*;
 import com.svadhan.collection.service.TrustCircleService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -84,6 +86,13 @@ public class TrustCircleServiceImpl implements TrustCircleService {
 
         /*Removing current customerId from customerTrustCircleResponses list.*/
         customerTrustCircleResponses=customerTrustCircleResponses.stream().filter(e -> !e.getCustomerId().equals(customerId)).collect(Collectors.toList());
+
+        /*Getting list of active(customer) TC Members of current customers*/
+        List<Long> activeCustomerIdList=trustCircleRepository.getActiveTcMembersOfCustomer(customerId);
+
+        /*In response, collecting only active TC Members.*/
+        customerTrustCircleResponses=customerTrustCircleResponses.stream().filter(e -> activeCustomerIdList.contains(e.getCustomerId())).collect(Collectors.toList());
+
         return customerTrustCircleResponses;
     }
 }
