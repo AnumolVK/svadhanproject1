@@ -191,7 +191,8 @@ jobs:
           
           aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --response-models 'application/json'='Empty' 
           aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --response-models 'application/json'='Empty' 
-          aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --response-models 'application/json'='Empty'          # aws lambda remove-permission --function-name ${funName[$index]} --statement-id ${funName[$index]}
+          aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --response-models 'application/json'='Empty'   
+          # aws lambda remove-permission --function-name ${funName[$index]} --statement-id ${funName[$index]}
           # aws lambda add-permission --function-name ${funName[$index]} --source-arn "arn:aws:execute-api:${{ vars.AWS_REGION }}:263711368213:$GATEWAY_ID/*/${method[$index]}/${funName[$index]}" --principal apigateway.amazonaws.com --statement-id ${funName[$index]} --action lambda:InvokeFunction
           if [[ ${pathVar[$index]} != "" ]]; then
             aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
@@ -204,7 +205,7 @@ jobs:
           fi      
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "2\d{2}"
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --selection-pattern "4\d{2}" 
-          aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --selection-pattern "5\d{2}"          done
+          aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --selection-pattern "5\d{2}"         
         done
     - name: AWS ApiGateway Deployment
              
