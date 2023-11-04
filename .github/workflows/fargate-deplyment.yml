@@ -205,6 +205,7 @@ jobs:
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "2\d{2}"
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --selection-pattern "4\d{2}" 
           aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --selection-pattern "5\d{2}"          done
+        done
     - name: AWS ApiGateway Deployment
              
       run: |
