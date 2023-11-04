@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 @Component
-public class CustomerProfile implements Function<Long, ResponseEntity<CustomerProfileResponse>> {
+public class CustomerProfileCollection implements Function<Long, ResponseEntity<CustomerProfileResponse>> {
 
     private final CustomerDetailsService customerDetailsService;
 
-    public CustomerProfile(CustomerDetailsService customerDetailsService) {
+    public CustomerProfileCollection(CustomerDetailsService customerDetailsService) {
         this.customerDetailsService = customerDetailsService;
     }
 

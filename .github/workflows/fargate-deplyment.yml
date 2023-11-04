@@ -33,7 +33,7 @@ env:
             "activeLoans"
             "collectionConfirmation"
             "completedCollections"
-            "customerProfile"
+            "customerProfileCollection"
             "lenderAPI7Scheduler"
             "loanPaymentHistory"
             "loanTrend"
