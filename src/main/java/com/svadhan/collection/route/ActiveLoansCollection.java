@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 @Component
-public class ActiveLoans implements Function<Long, ResponseEntity<LoanDetailsResponse>> {
+public class ActiveLoansCollection implements Function<Long, ResponseEntity<LoanDetailsResponse>> {
 
     private final LoansService loansService;
 
-    public ActiveLoans(LoansService loansService) {
+    public ActiveLoansCOLLECTION(LoansService loansService) {
         this.loansService = loansService;
     }
 
