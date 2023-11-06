@@ -12,7 +12,7 @@ public class ActiveLoansCollection implements Function<Long, ResponseEntity<Loan
 
     private final LoansService loansService;
 
-    public ActiveLoansCOLLECTION(LoansService loansService) {
+    public ActiveLoansCollection(LoansService loansService) {
         this.loansService = loansService;
     }
 
