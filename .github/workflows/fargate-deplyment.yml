@@ -30,7 +30,7 @@ env:
          )
   FunName: |
           (
-            "activeLoans"
+            "activeLoansCollection"
             "collectionConfirmation"
             "completedCollections"
             "customerProfileCollection"
