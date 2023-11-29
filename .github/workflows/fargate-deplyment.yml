@@ -183,10 +183,11 @@ jobs:
           fi
           if [[ ${pathVar[$index]} != "" ]]; then
             aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
-                --authorization-type None --request-parameters "{\"method.request.path.${pathVar[$index]}\": true}"
+                --authorization-type None --request-parameters "{\"method.request.path.${pathVar[$index]}\": true}" \
+                --api-key-required
           else
              aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
-              --authorization-type None 
+              --authorization-type None --api-key-required
           fi    
 
           
@@ -213,7 +214,7 @@ jobs:
     - name: AWS ApiGateway Deployment
              
       run: |
-          aws apigateway delete-stage --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
+          # aws apigateway delete-stage --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
           aws apigateway create-deployment --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
                 
        
