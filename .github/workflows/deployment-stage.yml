@@ -1,0 +1,227 @@
+
+name: Deploy to Amazon ECS
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  APP_NAME: "collection"
+  AWS_REGION: "ap-south-2"                   
+  ECR_REPOSITORY: "dhansethu-ecr"          
+  ECS_SERVICE: "collection"                 
+  ECS_CLUSTER:  "dhansethu-cluster"              
+                                            
+  CONTAINER_NAME:  "collection"           
+                                               
+  GATEWAY_ID: ${{ secrets.API_GATEWAY_ID }}
+  VPC_ID: "sawogk"
+  ALB_URL: "http://internal-dhansethu-stage-alb-219588150.ap-south-2.elb.amazonaws.com/collection"
+  Method: |
+         (
+         "GET"
+         "POST"
+         "GET"
+         "GET"
+         # "GET"
+         "GET"
+         "POST"
+         "POST"
+         "GET"
+         )
+  FunName: |
+          (
+            "activeLoansCollection"
+            "collectionConfirmation"
+            "completedCollections"
+            "customerProfileCollection"
+            # "lenderAPI7Scheduler"
+            "loanPaymentHistory"
+            "loanTrend"
+            "pendingCollections"
+            "trustCircleDetails"
+          )
+  PathVar: |
+          (
+          "customerId"
+          ""
+          "agentId"
+          "customerId"
+          # ""
+          "loanId"
+          ""
+          ""
+          "customerId"
+          
+          )
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      # run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 263711368213.dkr.ecr.us-east-1.amazonaws.com
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{env.APP_NAME}}-${{ github.sha }}
+      run: |
+        echo "ECR_REGISTRY$ECR_REGISTRY"
+        echo "IMAGE_TAG$IMAGE_TAG"
+
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        echo "docker build completed"
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "docker push completed"
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: Register AWS ECS Task Definition
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{env.APP_NAME}}-${{ github.sha }}
+        
+      run: |      
+           aws ecs register-task-definition --family ${{env.APP_NAME}} --task-role-arn "ecsTaskExecutionRole" \
+            --execution-role-arn "ecsTaskExecutionRole" \
+            --cpu "512" \
+            --network-mode "awsvpc" \
+            --memory "1024" \
+            --network-mode "awsvpc"\
+            --runtime-platform "{\"cpuArchitecture\": \"X86_64\", \"operatingSystemFamily\": \"LINUX\"}" \
+            --requires-compatibilities "[\"FARGATE\"]" \
+            --container-definitions "[{\"name\":\"${{env.APP_NAME}}\",\"image\":\"$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG\",\"essential\":true,\"portMappings\": [ \
+              
+              {
+              \"containerPort\": 8086,
+              \"hostPort\": 8086,
+              \"protocol\": \"tcp\"         
+            }
+            ],
+            \"environment\": [ \
+               {
+                \"name\": \"spring.profiles.active\",
+                \"value\": \"${{vars.Deployment_Stage}}\"
+              }],
+             \"logConfiguration\": {\"logDriver\": \"awslogs\",\"options\": { \
+                    \"awslogs-group\": \"${{env.APP_NAME}}\",
+                    \"awslogs-region\": \"ap-south-2\",
+                    \"awslogs-create-group\": \"true\",
+                    \"awslogs-stream-prefix\": \"dhansethu\"
+                }
+                }
+            }]" 
+    - name: Update ECS Service
+      run: |
+           aws ecs update-service --cluster ${{env.ECS_CLUSTER}} --service ${{env.ECS_SERVICE}} --task-definition ${{env.APP_NAME}} 
+    # - name:  GET AWS Gateway Root Resource 
+    #   continue-on-error: true
+     
+    #   run: |
+      
+    #       GW_RESOURCE_ID=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/" -r '.items[] |select(.path==$v) |.id')
+    #          echo "GW_RESOURCE_ID=$GW_RESOURCE_ID" >> $GITHUB_ENV
+    #          echo "Resource $GW_RESOURCE_ID"
+   
+    # - name: AWS Gateway Creation & Deployment
+    #   continue-on-error: true
+     
+    #   run: |
+    #    funName=${{env.FunName}}
+    #    method=${{env.Method}}
+    #    pathVar=${{env.PathVar}}
+    #    for index in ${!funName[@]}
+    #     do
+    #       echo "INDEX$index"
+         
+    #       RESOURCE_NAME=${funName[$index]}
+    #       echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
+    #       RESOURCE_EXIST=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/$RESOURCE_NAME" -r '.items[] |select(.path==$v) |.id')
+    #       echo "RESOURCE_EXIST$RESOURCE_EXIST"
+    #       echo "RESOURCE_EXIST$RESOURCE_EXIST" >> $GITHUB_ENV
+    #       if [[ $RESOURCE_EXIST != "" ]]; then
+    #         echo "RESOURCE_EXIST$RESOURCE_EXIST"
+    #         aws apigateway delete-resource --rest-api-id $GATEWAY_ID --resource-id $RESOURCE_EXIST
+    #       fi
+    #       echo "RESOURCE not EXISTgggg$RESOURCE_EXIST"
+    #       RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $GW_RESOURCE_ID  --path-part ${funName[$index]} --query id --output text)
+    #       echo "RESOURE_ID=$RESOURE_ID" >> $GITHUB_ENV
+    #        echo "PARHVAR${pathVar[$index]}"
+    #       if [[ ${pathVar[$index]} != "" ]]; then
+    #         echo "INSIDE PATH VAR"
+    #         RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $RESOURE_ID --path-part "{${pathVar[$index]}}" --query id --output text)
+    #       fi
+    #       if [[ ${pathVar[$index]} != "" ]]; then
+    #         aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
+    #             --authorization-type None --request-parameters "{\"method.request.path.${pathVar[$index]}\": true}" \
+    #             --api-key-required
+    #       else
+    #          aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
+    #           --authorization-type None --api-key-required
+    #       fi    
+
+          
+    #       aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --response-models 'application/json'='Empty' 
+    #       aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --response-models 'application/json'='Empty' 
+    #       aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --response-models 'application/json'='Empty'   
+    #       # aws lambda remove-permission --function-name ${funName[$index]} --statement-id ${funName[$index]}
+    #       # aws lambda add-permission --function-name ${funName[$index]} --source-arn "arn:aws:execute-api:${{ vars.AWS_REGION }}:263711368213:$GATEWAY_ID/*/${method[$index]}/${funName[$index]}" --principal apigateway.amazonaws.com --statement-id ${funName[$index]} --action lambda:InvokeFunction
+    #       if [[ ${pathVar[$index]} != "" ]]; then
+    #         aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
+    #             --connection-type VPC_LINK --connection-id $VPC_ID \
+    #             --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]}/"{"${pathVar[$index]}"}" \
+    #             --region ${{env.AWS_REGION}} --request-parameters "{\"integration.request.path.${pathVar[$index]}\": \"method.request.path.${pathVar[$index]}\"}"
+    #       else
+    #           aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
+    #               --connection-type VPC_LINK --connection-id $VPC_ID \
+    #               --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]} \
+    #               --region ${{env.AWS_REGION}} 
+    #       fi      
+    #       aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "2\d{2}"
+    #       aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --selection-pattern "4\d{2}" 
+    #       aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --selection-pattern "5\d{2}"         
+    #     done
+    # - name: AWS ApiGateway Deployment
+             
+    #   run: |
+    #       # aws apigateway delete-stage --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
+    #       aws apigateway create-deployment --rest-api-id $GATEWAY_ID --stage-name ${{vars.Deployment_Stage}}
+                
+       
+
+  
+
+  
+
+  
+     

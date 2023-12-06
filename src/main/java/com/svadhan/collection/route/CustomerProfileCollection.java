@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
+/**
+ *Changed CustomerProfile to  CustomerProfileCollection to avoid endpoint duplication
+ * issue.*/
 @Component
 public class CustomerProfileCollection implements Function<Long, ResponseEntity<CustomerProfileResponse>> {
 

@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
+/**
+ * Changed ActiveLoans endpoint name to ActiveLoansCollection , to avoid name
+ * duplication issue*/
+
 @Component
 public class ActiveLoansCollection implements Function<Long, ResponseEntity<LoanDetailsResponse>> {
 
