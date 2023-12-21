@@ -15,7 +15,7 @@ env:
   CONTAINER_NAME:  "collection"           
                                                
   GATEWAY_ID: ${{ secrets.API_GATEWAY_ID }}
-  VPC_ID: "sawogk"
+  VPCLINK_ID: "sawogk"
   ALB_URL: "http://internal-dhansethu-stage-alb-219588150.ap-south-2.elb.amazonaws.com/collection"
   Method: |
          (
@@ -198,12 +198,12 @@ jobs:
           # aws lambda add-permission --function-name ${funName[$index]} --source-arn "arn:aws:execute-api:${{ vars.AWS_REGION }}:263711368213:$GATEWAY_ID/*/${method[$index]}/${funName[$index]}" --principal apigateway.amazonaws.com --statement-id ${funName[$index]} --action lambda:InvokeFunction
           if [[ ${pathVar[$index]} != "" ]]; then
             aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
-                --connection-type VPC_LINK --connection-id $VPC_ID \
+                --connection-type VPC_LINK --connection-id $VPCLINK_ID \
                 --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]}/"{"${pathVar[$index]}"}" \
                 --region ${{env.AWS_REGION}} --request-parameters "{\"integration.request.path.${pathVar[$index]}\": \"method.request.path.${pathVar[$index]}\"}"
           else
               aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
-                  --connection-type VPC_LINK --connection-id $VPC_ID \
+                  --connection-type VPC_LINK --connection-id $VPCLINK_ID \
                   --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]} \
                   --region ${{env.AWS_REGION}} 
           fi      

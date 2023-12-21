@@ -15,8 +15,8 @@ env:
   CONTAINER_NAME:  "collection"           
                                                
   GATEWAY_ID: ${{ secrets.API_GATEWAY_ID_PROD }}
-  VPC_ID: "6em6vt"
-  ALB_URL: "http://internal-dhansethu-alb-2122447691.ap-south-2.elb.amazonaws.com/collection"
+  VPCLINK_ID: "32hrfx"
+  ALB_URL: "http://internal-dhansethu-prod-alb-1566408323.ap-south-2.elb.amazonaws.com/collection"
   Method: |
          (
          "GET"
@@ -112,7 +112,7 @@ jobs:
         IMAGE_TAG: ${{env.APP_NAME}}-${{ github.sha }}
         
       run: |      
-           aws ecs register-task-definition --family ${{env.APP_NAME}} --task-role-arn "ecsTaskExecutionRole" \
+           aws ecs register-task-definition --family ${{env.APP_NAME}} --task-role-arn "ecsTaskRole" \
             --execution-role-arn "ecsTaskExecutionRole" \
             --cpu "512" \
             --network-mode "awsvpc" \
@@ -141,81 +141,81 @@ jobs:
                 }
                 }
             }]" 
-    - name: Update ECS Service
+    # - name: Update ECS Service
+    #   run: |
+    #        aws ecs update-service --cluster ${{env.ECS_CLUSTER}} --service ${{env.ECS_SERVICE}} --task-definition ${{env.APP_NAME}} 
+    - name:  GET AWS Gateway Root Resource 
+      continue-on-error: true
+     
       run: |
-           aws ecs update-service --cluster ${{env.ECS_CLUSTER}} --service ${{env.ECS_SERVICE}} --task-definition ${{env.APP_NAME}} 
-    # - name:  GET AWS Gateway Root Resource 
-    #   continue-on-error: true
-     
-    #   run: |
       
-    #       GW_RESOURCE_ID=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/" -r '.items[] |select(.path==$v) |.id')
-    #          echo "GW_RESOURCE_ID=$GW_RESOURCE_ID" >> $GITHUB_ENV
-    #          echo "Resource $GW_RESOURCE_ID"
+          GW_RESOURCE_ID=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/" -r '.items[] |select(.path==$v) |.id')
+             echo "GW_RESOURCE_ID=$GW_RESOURCE_ID" >> $GITHUB_ENV
+             echo "Resource $GW_RESOURCE_ID"
    
-    # - name: AWS Gateway Creation & Deployment
-    #   continue-on-error: true
+    - name: AWS Gateway Creation & Deployment
+      continue-on-error: true
      
-    #   run: |
-    #    funName=${{env.FunName}}
-    #    method=${{env.Method}}
-    #    pathVar=${{env.PathVar}}
-    #    for index in ${!funName[@]}
-    #     do
-    #       echo "INDEX$index"
+      run: |
+       funName=${{env.FunName}}
+       method=${{env.Method}}
+       pathVar=${{env.PathVar}}
+       for index in ${!funName[@]}
+        do
+          echo "INDEX$index"
          
-    #       RESOURCE_NAME=${funName[$index]}
-    #       echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
-    #       RESOURCE_EXIST=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/$RESOURCE_NAME" -r '.items[] |select(.path==$v) |.id')
-    #       echo "RESOURCE_EXIST$RESOURCE_EXIST"
-    #       echo "RESOURCE_EXIST$RESOURCE_EXIST" >> $GITHUB_ENV
-    #       if [[ $RESOURCE_EXIST != "" ]]; then
-    #         echo "RESOURCE_EXIST$RESOURCE_EXIST"
-    #         aws apigateway delete-resource --rest-api-id $GATEWAY_ID --resource-id $RESOURCE_EXIST
-    #       fi
-    #       echo "RESOURCE not EXISTgggg$RESOURCE_EXIST"
-    #       RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $GW_RESOURCE_ID  --path-part ${funName[$index]} --query id --output text)
-    #       echo "RESOURE_ID=$RESOURE_ID" >> $GITHUB_ENV
-    #        echo "PARHVAR${pathVar[$index]}"
-    #       if [[ ${pathVar[$index]} != "" ]]; then
-    #         echo "INSIDE PATH VAR"
-    #         RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $RESOURE_ID --path-part "{${pathVar[$index]}}" --query id --output text)
-    #       fi
-    #       if [[ ${pathVar[$index]} != "" ]]; then
-    #         aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
-    #             --authorization-type None --request-parameters "{\"method.request.path.${pathVar[$index]}\": true}" \
-    #             --api-key-required
-    #       else
-    #          aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
-    #           --authorization-type None --api-key-required
-    #       fi    
+          RESOURCE_NAME=${funName[$index]}
+          echo "RESOURCE_NAME=$RESOURCE_NAME" >> $GITHUB_ENV
+          RESOURCE_EXIST=$(aws apigateway get-resources --rest-api-id $GATEWAY_ID --output json | jq --arg v "/$RESOURCE_NAME" -r '.items[] |select(.path==$v) |.id')
+          echo "RESOURCE_EXIST$RESOURCE_EXIST"
+          echo "RESOURCE_EXIST$RESOURCE_EXIST" >> $GITHUB_ENV
+          if [[ $RESOURCE_EXIST != "" ]]; then
+            echo "RESOURCE_EXIST$RESOURCE_EXIST"
+            aws apigateway delete-resource --rest-api-id $GATEWAY_ID --resource-id $RESOURCE_EXIST
+          fi
+          echo "RESOURCE not EXISTgggg$RESOURCE_EXIST"
+          RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $GW_RESOURCE_ID  --path-part ${funName[$index]} --query id --output text)
+          echo "RESOURE_ID=$RESOURE_ID" >> $GITHUB_ENV
+           echo "PARHVAR${pathVar[$index]}"
+          if [[ ${pathVar[$index]} != "" ]]; then
+            echo "INSIDE PATH VAR"
+            RESOURE_ID=$(aws apigateway  create-resource --rest-api-id $GATEWAY_ID --parent-id $RESOURE_ID --path-part "{${pathVar[$index]}}" --query id --output text)
+          fi
+          if [[ ${pathVar[$index]} != "" ]]; then
+            aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
+                --authorization-type None --request-parameters "{\"method.request.path.${pathVar[$index]}\": true}" \
+                --api-key-required
+          else
+             aws apigateway put-method --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} \
+              --authorization-type None --api-key-required
+          fi    
 
           
-    #       aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --response-models 'application/json'='Empty' 
-    #       aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --response-models 'application/json'='Empty' 
-    #       aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --response-models 'application/json'='Empty'   
-    #       # aws lambda remove-permission --function-name ${funName[$index]} --statement-id ${funName[$index]}
-    #       # aws lambda add-permission --function-name ${funName[$index]} --source-arn "arn:aws:execute-api:${{ vars.AWS_REGION }}:263711368213:$GATEWAY_ID/*/${method[$index]}/${funName[$index]}" --principal apigateway.amazonaws.com --statement-id ${funName[$index]} --action lambda:InvokeFunction
-    #       if [[ ${pathVar[$index]} != "" ]]; then
-    #         aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
-    #             --connection-type VPC_LINK --connection-id $VPC_ID \
-    #             --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]}/"{"${pathVar[$index]}"}" \
-    #             --region ${{env.AWS_REGION}} --request-parameters "{\"integration.request.path.${pathVar[$index]}\": \"method.request.path.${pathVar[$index]}\"}"
-    #       else
-    #           aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
-    #               --connection-type VPC_LINK --connection-id $VPC_ID \
-    #               --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]} \
-    #               --region ${{env.AWS_REGION}} 
-    #       fi      
-    #       aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "2\d{2}"
-    #       aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --selection-pattern "4\d{2}" 
-    #       aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --selection-pattern "5\d{2}"         
-    #     done
-    # - name: AWS ApiGateway Deployment
+          aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --response-models 'application/json'='Empty' 
+          aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --response-models 'application/json'='Empty' 
+          aws apigateway put-method-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --response-models 'application/json'='Empty'   
+          # aws lambda remove-permission --function-name ${funName[$index]} --statement-id ${funName[$index]}
+          # aws lambda add-permission --function-name ${funName[$index]} --source-arn "arn:aws:execute-api:${{ vars.AWS_REGION }}:263711368213:$GATEWAY_ID/*/${method[$index]}/${funName[$index]}" --principal apigateway.amazonaws.com --statement-id ${funName[$index]} --action lambda:InvokeFunction
+          if [[ ${pathVar[$index]} != "" ]]; then
+            aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
+                --connection-type VPC_LINK --connection-id $VPCLINK_ID \
+                --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]}/"{"${pathVar[$index]}"}" \
+                --region ${{env.AWS_REGION}} --request-parameters "{\"integration.request.path.${pathVar[$index]}\": \"method.request.path.${pathVar[$index]}\"}"
+          else
+              aws apigateway put-integration --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --type HTTP \
+                  --connection-type VPC_LINK --connection-id $VPCLINK_ID \
+                  --integration-http-method ${method[$index]} --uri ${{env.ALB_URL}}/${funName[$index]} \
+                  --region ${{env.AWS_REGION}} 
+          fi      
+          aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 200 --selection-pattern "2\d{2}"
+          aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 400 --selection-pattern "4\d{2}" 
+          aws apigateway put-integration-response --rest-api-id $GATEWAY_ID --resource-id $RESOURE_ID --http-method ${method[$index]} --status-code 500 --selection-pattern "5\d{2}"         
+        done
+    - name: AWS ApiGateway Deployment
              
-    #   run: |
-    #       # aws apigateway delete-stage --rest-api-id $GATEWAY_ID --stage-name ${{vars.Production_Stage}}
-    #       aws apigateway create-deployment --rest-api-id $GATEWAY_ID --stage-name ${{vars.Production_Stage}}
+      run: |
+          # aws apigateway delete-stage --rest-api-id $GATEWAY_ID --stage-name ${{vars.Production_Stage}}
+          aws apigateway create-deployment --rest-api-id $GATEWAY_ID --stage-name ${{vars.Production_Stage}}
                 
        
 
