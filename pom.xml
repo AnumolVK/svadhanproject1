@@ -94,10 +94,7 @@
 			<groupId>io.awspring.cloud</groupId>
 			<artifactId>spring-cloud-starter-aws-secrets-manager-config</artifactId>
 			<version>2.4.4</version>
-			<exclusion>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-context</artifactId>
-			</exclusion>
+			
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
