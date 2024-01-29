@@ -1,7 +1,6 @@
 package com.svadhan.collection.service.impl;
 
 import com.svadhan.collection.banking.entity.Emi;
-import com.svadhan.collection.constants.TransactionType;
 import com.svadhan.collection.entity.Loan;
 import com.svadhan.collection.banking.repository.EmiRepository;
 import com.svadhan.collection.repository.LoanRepository;
@@ -92,6 +91,7 @@ public class PendingCollectionsServiceImpl implements PendingCollectionsService 
             boolean categoryThree = false;
             boolean categoryFour = false;
             double emiDue = 0.0;
+            boolean loanDueExist = false;
             for (Loan loan : loans) {
                 List<Emi> emis = emiRepository.findAllByLoanIdOrderByCreatedOnDesc(loan.getId());
                 for (Emi emi : emis) {
@@ -104,30 +104,40 @@ public class PendingCollectionsServiceImpl implements PendingCollectionsService 
                     pendingCustomerCollectionResponse.setDpd(emi.getDpd());
                     if (emi.getDpd() > 30)
                         categoryFour = true;
-                    if (emi.getDpd() < 30 && emi.getDpd() > 0)
-                        categoryThree = true;
-                    if (emi.getDpd() > 0 && isInLast3Months)
-                        categoryTwo = true;
+                    loanDueExist = setLoanDueExistsTrueAs30DaysOver();
+                    if(emi.getDpd() > 0 ) {
+                        loanDueExist = setLoanDueExistsTrueAsDpdGTZero();
+                        if(emi.getDpd() < 30 )
+                            categoryThree = true;
+
+                        if(isInLast3Months)
+                            categoryTwo = true;
+                    }
                     if (emi.getDpd() == 0 && isInLast3Months)
-                        categoryOne = true;
+                        loanDueExist = setLoanDueExistsTrueIfLoanDueDateOver(loan, months);
+                    categoryOne = true;
                 }
+
             }
-            pendingCustomerCollectionResponse.setDueAmount(emiDue);
-            if (categoryFour) {
-                customerCategoryFour.add(pendingCustomerCollectionResponse);
-                continue;
-            }
-            if (categoryThree) {
-                customerCategoryThree.add(pendingCustomerCollectionResponse);
-                continue;
-            }
-            if (categoryTwo) {
-                customerCategoryTwo.add(pendingCustomerCollectionResponse);
-                continue;
-            }
-            if (categoryOne) {
-                customerCategoryOne.add(pendingCustomerCollectionResponse);
-                continue;
+
+            if(loanDueExist){
+                pendingCustomerCollectionResponse.setDueAmount(emiDue);
+                if (categoryFour) {
+                    customerCategoryFour.add(pendingCustomerCollectionResponse);
+                    continue;
+                }
+                if (categoryThree) {
+                    customerCategoryThree.add(pendingCustomerCollectionResponse);
+                    continue;
+                }
+                if (categoryTwo) {
+                    customerCategoryTwo.add(pendingCustomerCollectionResponse);
+                    continue;
+                }
+                if (categoryOne) {
+                    customerCategoryOne.add(pendingCustomerCollectionResponse);
+                    continue;
+                }
             }
         }
         pendingCollectionResponse.setAmountsDue(amountDue);
@@ -176,4 +186,23 @@ public class PendingCollectionsServiceImpl implements PendingCollectionsService 
         pendingCollectionResponse.setLoansDue(Math.toIntExact(numberOfloans));
         return pendingCollectionResponse;
     }
+
+    private static boolean setLoanDueExistsTrueAs30DaysOver() {
+        return true;
+    }
+
+    private static boolean setLoanDueExistsTrueAsDpdGTZero() {
+        return true;
+    }
+
+    private static boolean  setLoanDueExistsTrueIfLoanDueDateOver(Loan loan, long months) {
+
+        if(months > 1 && LocalDateTime.now().getDayOfMonth() >  loan.getEmiStartDate().getDayOfMonth() ){
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 }
