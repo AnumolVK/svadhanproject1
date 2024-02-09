@@ -195,7 +195,7 @@ public class PendingCollectionsServiceImpl implements PendingCollectionsService 
         return true;
     }
 
-    private static boolean  setLoanDueExistsTrueIfLoanDueDateOver(Loan loan, long months) {
+    protected static boolean  setLoanDueExistsTrueIfLoanDueDateOver(Loan loan, long months) {
 
         if(months > 1 && LocalDateTime.now().getDayOfMonth() >  loan.getEmiStartDate().getDayOfMonth() ){
             return true;
